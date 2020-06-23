@@ -8,13 +8,26 @@
 
 import UIKit
 
+struct Weather
+{
+    
+    
+}
+
 class ViewController: UIViewController {
 
+    
+    var Model = [Weather]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        
     }
 
+    
+    
 
 }
 
