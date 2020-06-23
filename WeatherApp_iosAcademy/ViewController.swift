@@ -7,17 +7,21 @@
 //
 
 import UIKit
-
+import CoreLocation
 struct Weather
 {
     
     
 }
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate {
 
     
     @IBOutlet weak var tables: UITableView!
+    
+    var locationManager = CLLocationManager()
+    
+    var currentLocation : CLLocation?
     
     var Model = [Weather]()
     
@@ -39,6 +43,35 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
     }
     
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        
+        setUpLocation()
+    }
+    
+    //Location
+    
+    func setUpLocation()
+    {
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
+    
+        
+    }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if locations.isEmpty , currentLocation == nil
+        {
+            
+            locations.first
+            locationManager.stopUpdatingLocation()
+        }
+    }
     
     //Table
     
