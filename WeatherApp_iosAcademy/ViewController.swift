@@ -45,7 +45,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+        super.viewDidAppear(animated)
         
         setUpLocation()
     }
@@ -59,7 +59,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
-    
+       
         
     }
     
@@ -70,7 +70,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             locations.first
             locationManager.stopUpdatingLocation()
+            
+            requestForWeatherLocation()
         }
+    }
+    func requestForWeatherLocation()
+    {
+    
+        
+        guard let currentLocation = currentLocation else { return}
+        
+        let lat = currentLocation.coordinate.latitude
+        let long = currentLocation.coordinate.longitude
+        
+        print("lat: \(lat)  long:\(long)")
+        
     }
     
     //Table
