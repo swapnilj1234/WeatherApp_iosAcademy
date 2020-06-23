@@ -6,6 +6,7 @@
 //  Copyright © 2020 t. All rights reserved.
 //
 
+//LET URL =        https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/37.33233141,-122.031218?exclude=[flags,minutely] //37 LAT -122 LONGITUDE OF APPLE CALIFORNIA
 import UIKit
 import CoreLocation
 struct Weather
@@ -82,6 +83,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let lat = currentLocation.coordinate.latitude
         let long = currentLocation.coordinate.longitude
+        
+        let url = "https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/\(lat),\(long)?exclude=[flags,minutely]"
         
         print("lat: \(lat)  long:\(long)")
         
