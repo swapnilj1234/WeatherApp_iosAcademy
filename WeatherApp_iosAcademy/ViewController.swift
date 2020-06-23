@@ -9,10 +9,117 @@
 //LET URL =        https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/37.33233141,-122.031218?exclude=[flags,minutely] //37 LAT -122 LONGITUDE OF APPLE CALIFORNIA
 import UIKit
 import CoreLocation
-struct Weather
+
+struct Weather:Codable
 {
     
+    var latitude : Float
+    var longitude : Float
+    var timezone : String
+    var currently : currentlyWeather
+    var hourly : hourlyWeather
+    var daily : dailyWeather
+    var offset : Float
+}
+struct currentlyWeather:Codable {
+    var time : Int
+    var summary : String
+    var icon : String
+    var nearestStormBearing : Int
+    var nearestStormDistance : Int
+    var precipIntensity : Int
+    var precipProbability : Int
+    var temperature : Double
+    var apparentTemperature : Double
+    var dewPoint : Double
+    var humidity : Double
+    var pressure : Double
+    var windSpeed : Double
+    var windGust : Double
+    var windBearing : Double
+    var cloudCover : Double
+    var uvIndex : Int
+    var visibility : Double
+    var ozone : Double
+}
+struct hourlyWeather:Codable {
+    var summary : String
+    var icon : String
+    var data : [HourlyData]
+}
+
+struct HourlyData:Codable {
     
+       var time : Int
+       var summary : String
+       var icon : String
+       var precipIntensity : Float
+       var precipProbability : Double
+       var precipType:String?
+       var temperature : Double
+       var apparentTemperature : Double
+       var dewPoint : Double
+       var humidity : Double
+       var pressure : Double
+       var windSpeed : Double
+       var windGust : Double
+       var windBearing : Int
+       var cloudCover : Double
+       var uvIndex : Int
+       var visibility : Int
+       var ozone : Double
+
+}
+
+struct dailyWeather:Codable {
+       var summary : String
+       var icon : String
+       var data : [dailyData]
+}
+struct dailyData:Codable {
+    
+    var time : Int
+    var summary : String
+    var icon : String
+    var sunriseTime: Int
+    var sunsetTime : Int
+    var moonPhase : Double
+    var precipIntensity : Float
+    var precipIntensityMax : Float
+    var precipIntensityMaxTime : Int
+    var precipProbability : Double
+    var precipType : String?
+    var temperatureHigh : Double
+    var temperatureHighTime: Int
+    var temperatureLow: Double
+    var temperatureLowTime: Int
+    var apparentTemperatureHigh:Double
+    var apparentTemperatureHighTime:Int
+    var apparentTemperatureLow: Double
+    var apparentTemperatureLowTime : Int
+    var dewPoint : Double
+    var humidity : Double
+    var pressure : Double
+    var windSpeed : Double
+    var windGust : Double
+    var windGustTime:Int
+    var windBearing : Int
+    var cloudCover : Double
+    var uvIndex : Int
+    var uvIndexTime : Int
+    var visibility : Double
+    var ozone : Double
+    var temperatureMin: Double
+    var temperatureMinTime:Int
+    var temperatureMax:Double
+    var temperatureMaxTime:Int
+    var apparentTemperatureMin:Double
+    var apparentTemperatureMinTime:Int
+    var apparentTemperatureMax:Double
+    var apparentTemperatureMaxTime : Int
+
+
+
 }
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate {
@@ -86,7 +193,28 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let url = "https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/\(lat),\(long)?exclude=[flags,minutely]"
         
-        print("lat: \(lat)  long:\(long)")
+        URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
+            
+            guard let datas = data , error == nil else
+            {return
+             }
+            var json : Weather?
+            
+            do
+            {
+                json =  try! JSONDecoder().decode(Weather.self, from: datas)
+
+            }
+            catch
+            {
+                print("error \(error.localizedDescription)")
+            }
+            guard let result = json else
+            {
+                return
+            }
+            print(result.currently.icon)
+        }.resume()
         
     }
     
