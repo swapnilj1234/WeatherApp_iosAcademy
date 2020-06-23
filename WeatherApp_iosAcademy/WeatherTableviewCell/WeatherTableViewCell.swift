@@ -10,15 +10,19 @@ import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
 
+    
+    @IBOutlet var dayLable : UILabel!
+    @IBOutlet var lowTempLable : UILabel!
+    @IBOutlet var highTempLable : UILabel!
+    @IBOutlet var iconImageView : UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        
+        
     }
     
     static let identifier = "WeatherTableViewCell"
@@ -28,5 +32,26 @@ class WeatherTableViewCell: UITableViewCell {
      
           return UINib(nibName: "WeatherTableViewCell", bundle: nil)
       }
+    
+    func configure(with Model:dailyData)
+    {
+        
+     
+        self.highTempLable.text = "\(Int(Model.temperatureLow))°"
+        self.lowTempLable.text = "\(Int(Model.temperatureHigh))"
+        self.dayLable.text = getDayForDate(Date(timeIntervalSince1970: Double(Model.time)))
+        self.imageView?.image = UIImage(named: "cloud")
+    }
+    
+    func getDayForDate(_ date : Date?) -> String
+    {
+        guard let inputDate = date else
+        {
+            return ""
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE" //monday
+        return formatter.string(from: inputDate)
+    }
     
 }

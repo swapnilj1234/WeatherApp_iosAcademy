@@ -66,7 +66,7 @@ struct HourlyData:Codable {
        var windBearing : Int
        var cloudCover : Double
        var uvIndex : Int
-       var visibility : Int
+       var visibility : Float?
        var ozone : Double
 
 }
@@ -107,7 +107,7 @@ struct dailyData:Codable {
     var cloudCover : Double
     var uvIndex : Int
     var uvIndexTime : Int
-    var visibility : Double
+    var visibility : Float
     var ozone : Double
     var temperatureMin: Double
     var temperatureMinTime:Int
@@ -131,7 +131,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var currentLocation : CLLocation?
     
-    var Model = [Weather]()
+    var Model = [dailyData]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -213,7 +213,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 return
             }
-            print(result.currently.icon)
+
+            let entries = result.daily.data
+            
+            self.Model.append(contentsOf: entries)
+            
+            
+            //update user interface
+            
+            DispatchQueue.main.async {
+                self.tables.reloadData()
+            }
+
         }.resume()
         
     }
@@ -225,7 +236,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        
+        let cell = tables.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
+        
+        cell.configure(with: Model[indexPath.row])
+        
+        return cell
     }
 
     
