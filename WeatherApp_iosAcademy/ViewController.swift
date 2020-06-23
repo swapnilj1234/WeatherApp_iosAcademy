@@ -65,10 +65,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if locations.isEmpty , currentLocation == nil
+        if !locations.isEmpty , currentLocation == nil
         {
             
-            locations.first
+           currentLocation =  locations.first
             locationManager.stopUpdatingLocation()
             
             requestForWeatherLocation()
