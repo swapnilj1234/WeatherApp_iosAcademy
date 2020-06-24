@@ -238,6 +238,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         headerView.backgroundColor = .red
         
+        let locationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/2))
+        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height+summaryLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/2))
+        
+        
+        
+        headerView.addSubview(locationLabel)
+        headerView.addSubview(tempLabel)
+        headerView.addSubview(summaryLabel)
+        
+        locationLabel.textAlignment = .center
+        tempLabel.textAlignment = .center
+        summaryLabel.textAlignment = .center
+        
+        locationLabel.text = "current"
+        tempLabel.text = "12"
+        summaryLabel.text = "clear"
+        
         return headerView
         
         
