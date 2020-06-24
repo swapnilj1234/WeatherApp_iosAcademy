@@ -9,6 +9,7 @@
 //LET URL =        https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/37.33233141,-122.031218?exclude=[flags,minutely] //37 LAT -122 LONGITUDE OF APPLE CALIFORNIA
 import UIKit
 import CoreLocation
+import MapKit
 
 struct Weather:Codable
 {
@@ -135,6 +136,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var Model = [dailyData]()
     
+    var hourlyModel = [HourlyData]()
+    
+    var locationName = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -180,7 +185,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if !locations.isEmpty , currentLocation == nil
         {
             
-           currentLocation =  locations.first
+            currentLocation =  locations.first
             locationManager.stopUpdatingLocation()
             
             requestForWeatherLocation()
@@ -191,9 +196,41 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
         //var indiacator = uiactiv
         guard let currentLocation = currentLocation else { return}
-        
+
         let lat = currentLocation.coordinate.latitude
         let long = currentLocation.coordinate.longitude
+
+
+        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+
+        //let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+
+        //let region = MKCoordinateRegion(center: coordinate, span: span)
+
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: lat, longitude: long)
+
+
+        let pin = MKPointAnnotation()
+        pin.coordinate = coordinate
+
+        geocoder.reverseGeocodeLocation(location) { (placemark ,error) in
+
+            let place = placemark
+
+            let dic = place![0].addressDictionary as? [String : Any]
+                        let name = dic?["Name"] as? String
+                        let city = dic!["City"] as? String
+
+                        pin.title = name
+                        pin.subtitle = city
+
+
+            self.locationName = name!
+
+        }
+
+        print(lat,long)
         
         let url = "https://api.darksky.net/forecast/ddcc4ebb2a7c9930b90d9e59bda0ba7a/\(lat),\(long)?exclude=[flags,minutely]"
         
@@ -227,6 +264,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let currents = result.currently
             self.current = currents
             
+            //hourly data
+            
+            self.hourlyModel = result.hourly.data
+            
+            
+            
             //update user interface
             
             DispatchQueue.main.async {
@@ -246,11 +289,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         headerView.backgroundColor = UIColor(red: 52/255.0, green: 109/255.0, blue: 179/255.0, alpha: 1.0)
         
-        let locationLabel = UILabel(frame: CGRect(x: 10, y: 5, width: view.frame.size.width-20, height: 40))
-        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: 20))
-        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/2))
+//        let locationLabel = UILabel(frame: CGRect(x: 10, y: 5, width: view.frame.size.width-20, height: 40))
+//        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: 20))
+//        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/2))
+//
         
-        
+        let locationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height+summaryLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/2))
+
         
         headerView.addSubview(locationLabel)
         headerView.addSubview(tempLabel)
@@ -260,9 +307,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tempLabel.textAlignment = .center
         summaryLabel.textAlignment = .center
         
+        //Name for Location
         
         
-        locationLabel.text = "current"
+        
+        locationLabel.text = locationName
         
         
         guard let currentWeather = self.current else { return UIView() }
@@ -279,11 +328,34 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //Table
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if section == 0
+        {
+            //1 cell that is collectionviewcell
+            return 1
+        }
+        
         return Model.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
+        if indexPath.section == 0
+        {
+            let cell = tables.dequeueReusableCell(withIdentifier: HourlyTableViewCell.identifier, for: indexPath) as! HourlyTableViewCell
+            cell.configure(with: hourlyModel)
+            cell.backgroundColor = UIColor(red: 52/255.0, green: 109/255.0, blue: 179/255.0, alpha: 1.0)
+            
+            return cell
+            
+        }
+        
         
         let cell = tables.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
         

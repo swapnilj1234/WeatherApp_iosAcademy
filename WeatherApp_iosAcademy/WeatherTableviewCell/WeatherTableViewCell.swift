@@ -36,15 +36,15 @@ class WeatherTableViewCell: UITableViewCell {
     func configure(with Model:dailyData)
     {
         
-        //self.highTempLable.textAlignment = .center
-        //self.lowTempLable.textAlignment = .center
+        self.highTempLable.textAlignment = .center
+        self.lowTempLable.textAlignment = .center
         self.highTempLable.text = "\(Int(Model.temperatureLow))°"
         self.lowTempLable.text = "\(Int(Model.temperatureHigh))"
         self.dayLable.text = getDayForDate(Date(timeIntervalSince1970: Double(Model.time)))
-        //self.imageView?.contentMode = .scaleAspectFit
+        self.imageView?.contentMode = .scaleAspectFit
         
         
-        let icon = Model.icon
+        let icon = Model.icon.lowercased()
         
         if icon.contains("clear-day")
         {
