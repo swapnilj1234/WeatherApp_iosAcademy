@@ -185,7 +185,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func requestForWeatherLocation()
     {
     
-        
+        //var indiacator = uiactiv
         guard let currentLocation = currentLocation else { return}
         
         let lat = currentLocation.coordinate.latitude
@@ -223,9 +223,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             DispatchQueue.main.async {
                 self.tables.reloadData()
+                
+                self.tables.tableHeaderView = self.createTableHeader()
+                
             }
 
         }.resume()
+        
+    }
+    
+    func createTableHeader() -> UIView
+    {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height))
+        
+        headerView.backgroundColor = .red
+        
+        return headerView
+        
         
     }
     
@@ -244,7 +258,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return cell
     }
 
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
     
 
 }
