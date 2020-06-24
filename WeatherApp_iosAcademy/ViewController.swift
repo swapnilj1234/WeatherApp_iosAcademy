@@ -150,6 +150,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tables.delegate = self
         tables.dataSource = self
         
+        tables.backgroundColor = UIColor(red: 52/255.0, green: 109/255.0, blue: 179/255.0, alpha: 1.0)
+        view.backgroundColor = UIColor(red: 52/255.0, green: 109/255.0, blue: 179/255.0, alpha: 1.0)
         
     }
     
